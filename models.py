@@ -41,6 +41,7 @@ def setup_db(app, database_url=database_url):
 
 
 
+
 class Message(db.Model):  
   __tablename__ = 'msgs'
 
