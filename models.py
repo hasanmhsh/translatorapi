@@ -32,7 +32,7 @@ def setup_db(app, database_url=database_url):
     # # Create database if it does not exist.
     # if not database_exists(engine.url):
     #     create_database(engine.url)
-    engine.dispose()
+    # engine.dispose()
     app.config["SQLALCHEMY_DATABASE_URI"] = database_url
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
