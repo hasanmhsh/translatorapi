@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "684d135bc76b60f89b84c3af6c0fac34e0951de933fe689c3e1d57c1520f3a14"
+            "sha256": "2e6de32a6d48fe0e4ac70bf78e122036483363a2991830f17fea6e01c2c43454"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -61,6 +61,13 @@
             ],
             "index": "pypi",
             "version": "==7.0"
+        },
+        "codernitydb3": {
+            "hashes": [
+                "sha256:87a87b96c369a02369bfd7a93fb7ef976015ac2f056ea00b73891bc62b48d3b4"
+            ],
+            "index": "pypi",
+            "version": "==0.6.0"
         },
         "flask": {
             "hashes": [
