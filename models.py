@@ -26,12 +26,12 @@ print(database_url)
 db = SQLAlchemy()
 
 def setup_db(app, database_url=database_url):
-    # Create an engine object.
-    engine = create_engine(database_url, echo=True)
+    # # Create an engine object.
+    # engine = create_engine(database_url, echo=True)
 
-    # Create database if it does not exist.
-    if not database_exists(engine.url):
-        create_database(engine.url)
+    # # Create database if it does not exist.
+    # if not database_exists(engine.url):
+    #     create_database(engine.url)
     engine.dispose()
     app.config["SQLALCHEMY_DATABASE_URI"] = database_url
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
