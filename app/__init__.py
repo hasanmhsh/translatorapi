@@ -7,7 +7,7 @@ import random
 from datetime import datetime, timedelta
 import mishkal.tashkeel
 
-from models import setup_db, User, Message,db
+from models import setup_db, MyUser, Message,db
 
 QUESTIONS_PER_PAGE = 10
 
@@ -71,7 +71,7 @@ def create_app(test_config=None):
 
 
         try:
-            user=User(
+            user=MyUser(
                 new_name, 
                 new_phone, 
                 new_email, 
@@ -129,8 +129,8 @@ def create_app(test_config=None):
 
         returned = {}
         try:
-            sender_obj = User.query.filter(User.id == sender['id']).one_or_none()
-            receiver_obj = User.query.filter(User.id == receiver['id']).one_or_none()
+            sender_obj = MyUser.query.filter(MyUser.id == sender['id']).one_or_none()
+            receiver_obj = MyUser.query.filter(MyUser.id == receiver['id']).one_or_none()
             if sender_obj is None or receiver_obj is None:
                 abort(404)
                 # return jsonify({
@@ -219,7 +219,7 @@ def create_app(test_config=None):
     def get_active_users():
         # user last update before 5 sec will be rejected
         dttime_threshold = datetime.now() - timedelta(hours=0, minutes=0, seconds=5)
-        selection = User.query.filter(User.lastactivedatetimedt >= dttime_threshold).all()
+        selection = MyUser.query.filter(MyUser.lastactivedatetimedt >= dttime_threshold).all()
 
 
         # if total_size==0:
@@ -237,7 +237,7 @@ def create_app(test_config=None):
         success = True
         returned = {}
         try:
-            user = User.query.filter(User.id == id).one_or_none()
+            user = MyUser.query.filter(MyUser.id == id).one_or_none()
             if user is None:
                 abort(404)
                 # return jsonify({
@@ -246,7 +246,8 @@ def create_app(test_config=None):
             user.update() 
             returned["success"] = True
             returned["id"] = user.id
-        except:
+        except Exception as e:
+            return str(e)
             success = False
             # Question.rollback()
         # finally:

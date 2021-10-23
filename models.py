@@ -49,11 +49,11 @@ class Message(db.Model):
   text = Column(String)
   translatedtext = Column(String)
   moshakkaltext = Column(String)
-  sender_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
-  receiver_id = db.Column(db.Integer, db.ForeignKey('User.id'), nullable=False)
+  sender_id = db.Column(db.Integer, db.ForeignKey('MyUser.id'), nullable=False)
+  receiver_id = db.Column(db.Integer, db.ForeignKey('MyUser.id'), nullable=False)
   timedt = db.Column(db.TIMESTAMP, nullable=False, server_default=db.func.now(), onupdate=db.func.now())
-  sender = db.relationship("User", foreign_keys=[sender_id])
-  receiver = db.relationship("User", foreign_keys=[receiver_id])
+  sender = db.relationship("MyUser", foreign_keys=[sender_id])
+  receiver = db.relationship("MyUser", foreign_keys=[receiver_id])
 
   def __init__(self, text, translatedtext, moshakkaltext):
     self.text = text
@@ -81,11 +81,11 @@ class Message(db.Model):
     }
 
 '''
-User
+MyUser
 
 '''
-class User(db.Model):  
-  __tablename__ = 'User'
+class MyUser(db.Model):  
+  __tablename__ = 'MyUser'
 
   id = Column(Integer, primary_key=True, autoincrement=True)
   name = Column(String)
