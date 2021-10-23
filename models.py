@@ -20,7 +20,7 @@ port = os.getenv('DB_PORT', 5432)
 db_name = os.getenv('DB_NAME', "translatordb2")
 host = os.getenv('DB_HOST', 'localhost')
 
-database_url = "{}://{}:{}@{}:{}/{}".format(scheme,username,password,host,port,db_name)
+database_url = os.getenv("DATABASE_URL","{}://{}:{}@{}:{}/{}".format(scheme,username,password,host,port,db_name))
 print(database_url)
 
 db = SQLAlchemy()
