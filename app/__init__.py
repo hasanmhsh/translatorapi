@@ -107,12 +107,8 @@ def create_app(test_config=None):
             'text': text,
             'translatedtext': translatedtext,
             'moshakkaltext': moshakkaltext
-            'sender' :{
-                user
-            },
-            'receiver' : {
-                user
-            }
+            'sender_id' :id,
+            'receiver_id' : id
         }
         '''
         error = False
@@ -120,17 +116,14 @@ def create_app(test_config=None):
         text = body.get('text', None)
         translatedtext = body.get('translatedtext', None)
         moshakkaltext = body.get('moshakkaltext', None)
-        sender = body.get('sender', None)
-        print('ok')
-        print(sender)
-        receiver = body.get('receiver', None)
+        sender_id = body.get('sender_id', None)
+        receiver_id = body.get('receiver_id', None)
 
-        print(receiver)
 
         returned = {}
         try:
-            sender_obj = MyUser.query.filter(MyUser.id == sender['id']).one_or_none()
-            receiver_obj = MyUser.query.filter(MyUser.id == receiver['id']).one_or_none()
+            sender_obj = MyUser.query.filter(MyUser.id == sender_id).one_or_none()
+            receiver_obj = MyUser.query.filter(MyUser.id == receiver_id).one_or_none()
             if sender_obj is None or receiver_obj is None:
                 abort(404)
                 # return jsonify({
