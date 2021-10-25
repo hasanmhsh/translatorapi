@@ -77,7 +77,9 @@ class Message(db.Model):
       'text': self.text,
       'translatedtext': self.translatedtext,
       'moshakkaltext': self.moshakkaltext,
-      'timedt': self.timedt
+      'timedt': self.timedt,
+      'sender_id' : self.sender_id,
+      'receiver_id' : self.receiver_id
     }
 
 '''
