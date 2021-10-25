@@ -127,6 +127,7 @@ class MyUser(db.Model):
       'language': self.language,
       'country': self.country,
       'lastactivetimedt' : self.lastactivedatetimedt
+      }
       
   def format_special(self,dttime_threshold):
     return {
