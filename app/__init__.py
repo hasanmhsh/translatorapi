@@ -163,7 +163,8 @@ def create_app(test_config=None):
         #     abort(404)
         returned_json = jsonify([msg.format() for msg in selection ])
         for msg in selection:
-              db.session.delete(msg)
+            if msg.sender_id == seconduserid:
+                db.session.delete(msg)
         db.session.commit()
         
         
