@@ -161,11 +161,7 @@ def create_app(test_config=None):
 
         # if total_size==0:
         #     abort(404)
-        return jsonify({
-            "firstuserid" :firstuserid,
-            "seconduserid" : seconduserid,
-            "messages": [msg.format() for msg in selection ]
-        })
+        return jsonify([msg.format() for msg in selection ])
 
 
     '''
