@@ -173,6 +173,19 @@ def create_app(test_config=None):
         
         
         return returned_json
+        
+    @app.route('/messages/messages')
+    def get_all_msgs():
+        selection = Message.query.order_by(desc(Message.timedt)).all()
+
+        # firstuser id is the id of the one who request this endpoint so i will return the message for sended to only
+        total_size = len(selection)
+
+        # if total_size==0:
+        #     abort(404)
+        returned_json = jsonify([msg.format() for msg in selection ])
+        
+        return returned_json
 
 
     '''
