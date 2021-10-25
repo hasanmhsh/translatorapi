@@ -117,7 +117,7 @@ class MyUser(db.Model):
   def delete(self):
     db.session.delete(self)
     db.session.commit()
-
+    
   def format(self):
     return {
       'id': self.id,
@@ -127,4 +127,15 @@ class MyUser(db.Model):
       'language': self.language,
       'country': self.country,
       'lastactivetimedt' : self.lastactivedatetimedt
+      
+  def format_special(self,dttime_threshold):
+    return {
+      'id': self.id,
+      'name': self.name,
+      'phone': self.phone,
+      'email': self.email,
+      'language': self.language,
+      'country': self.country,
+      'lastactivetimedt' : self.lastactivedatetimedt,
+      'isactive' : self.lastactivedatetimedt >= dttime_threshold
     }

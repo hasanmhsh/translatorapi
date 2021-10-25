@@ -11,6 +11,8 @@ from models import setup_db, MyUser, Message,db
 
 QUESTIONS_PER_PAGE = 10
 
+
+
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
@@ -155,16 +157,18 @@ def create_app(test_config=None):
     '''
     @app.route('/messages/firstuserid/<int:firstuserid>/seconduserid/<int:seconduserid>')
     def get_usr_msgs(firstuserid, seconduserid):
-        selection = Message.query.filter(or_(and_(Message.sender_id==firstuserid, Message.receiver_id==seconduserid),and_(Message.receiver_id==firstuserid, Message.sender_id==seconduserid))).order_by(desc(Message.timedt)).all()
+        #selection = Message.query.filter(or_(and_(Message.sender_id==firstuserid, Message.receiver_id==seconduserid),and_(Message.receiver_id==firstuserid, Message.sender_id==seconduserid))).order_by(desc(Message.timedt)).all()
+        
+        selection = Message.query.filter(and_(Message.receiver_id==firstuserid, Message.sender_id==seconduserid)).order_by(desc(Message.timedt)).all()
 
+        # firstuser id is the id of the one who request this endpoint so i will return the message for sended to only
         total_size = len(selection)
 
         # if total_size==0:
         #     abort(404)
         returned_json = jsonify([msg.format() for msg in selection ])
         for msg in selection:
-            if msg.sender_id == seconduserid:
-                db.session.delete(msg)
+            db.session.delete(msg)
         db.session.commit()
         
         
@@ -209,21 +213,19 @@ def create_app(test_config=None):
 
 
     '''
-    DONE: Get active users OK
+    DONE: Get users OK
     '''
     @app.route('/users')
-    def get_active_users():
+    def get_users():
         # user last update before 5 sec will be rejected
-        dttime_threshold = datetime.now() - timedelta(hours=0, minutes=0, seconds=5)
-        selection = MyUser.query.filter(MyUser.lastactivedatetimedt >= dttime_threshold).all()
+        delta_sec = int(os.getenv('ACTIVITY_THRESHOLD_SECONDS', 5))
+        dttime_threshold = datetime.now() - timedelta(hours=0, minutes=0, seconds=delta_sec)
+        selection = MyUser.query.order_by(MyUser.id).all()
 
 
         # if total_size==0:
         #     abort(404)
-        return jsonify({
-            "user_id": True,
-            "users": [usr.format() for usr in selection ]
-        })
+        return jsonify([usr.format_special(dttime_threshold) for usr in selection ])
 
     '''
     DONE: Ping to update user last active time OK
