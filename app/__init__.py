@@ -161,7 +161,13 @@ def create_app(test_config=None):
 
         # if total_size==0:
         #     abort(404)
-        return jsonify([msg.format() for msg in selection ])
+        returned_json = jsonify([msg.format() for msg in selection ])
+        for msg in selection:
+              db.session.delete(msg)
+        db.session.commit()
+        
+        
+        return returned_json
 
 
     '''
