@@ -245,6 +245,34 @@ def create_app(test_config=None):
             return jsonify(returned)
         else:
             abort(422)
+            
+            '''
+    DONE: Delete user OK
+    '''
+    @app.route('/users/<int:id>', methods=['DELETE'])
+    def delete_usr(id):
+        success = True
+        returned = {}
+        try:
+            usr = MyUser.query.filter(MyUser.id == id).one_or_none()
+            if usr is None:
+                abort(404)
+                # return jsonify({
+                #     "result" : "not found"
+                # })
+            usr.delete() 
+            returned["success"] = True
+            returned["deleted"] = usr.id
+        except Exception as e:
+            return str(e)
+            error = True
+            # Question.rollback()
+        # finally:
+            # Question.close()
+        if success:
+            return jsonify(returned)
+        else:
+            abort(422)
 
 
     '''
