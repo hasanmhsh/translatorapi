@@ -162,17 +162,39 @@ def create_app(test_config=None):
         selection = Message.query.filter(and_(Message.receiver_id==firstuserid, Message.sender_id==seconduserid)).order_by(desc(Message.timedt)).all()
 
         # firstuser id is the id of the one who request this endpoint so i will return the message for sended to only
-        total_size = len(selection)
+        # total_size = len(selection)
 
         # if total_size==0:
         #     abort(404)
-        returned_json = jsonify([msg.format() for msg in selection ])
+        return single_msg_burst(selection)
+
+    def single_msg_burst(selection, is_jsonified=True):
+        msgs = []
+        # returned_json = jsonify([msg.format() for msg in selection ])
         for msg in selection:
+            msgs.append(msg.format())
             db.session.delete(msg)
         db.session.commit()
+        if is_jsonified:
+            return jsonify(msgs)
+        else:
+            return msgs
+
+    '''
+    DONE: Get receiver mesages OK
+    '''
+    @app.route('/messages/receiver/<int:receiver_id>')
+    def get_receiver_msgs(receiver_id, is_jsonified=True):
+        #selection = Message.query.filter(or_(and_(Message.sender_id==firstuserid, Message.receiver_id==seconduserid),and_(Message.receiver_id==firstuserid, Message.sender_id==seconduserid))).order_by(desc(Message.timedt)).all()
         
+        selection = Message.query.filter(Message.receiver_id==receiver_id).order_by(desc(Message.timedt)).all()
+
+        # firstuser id is the id of the one who request this endpoint so i will return the message for sended to only
+
+        # if total_size==0:
+        #     abort(404)
+        return single_msg_burst(selection, is_jsonified)
         
-        return returned_json
         
     @app.route('/messages/messages')
     def get_all_msgs():
@@ -229,7 +251,7 @@ def create_app(test_config=None):
     DONE: Get users OK
     '''
     @app.route('/users')
-    def get_users():
+    def get_users(is_jsonified = True):
         # user last update before 5 sec will be rejected
         delta_sec = int(os.getenv('ACTIVITY_THRESHOLD_SECONDS', 5))
         dttime_threshold = datetime.now() - timedelta(hours=0, minutes=0, seconds=delta_sec)
@@ -238,7 +260,11 @@ def create_app(test_config=None):
 
         # if total_size==0:
         #     abort(404)
-        return jsonify([usr.format_special(dttime_threshold) for usr in selection ])
+        users = [usr.format_special(dttime_threshold) for usr in selection ]
+        if is_jsonified:
+            return jsonify(users)
+        else:
+            return users
 
     '''
     DONE: Ping to update user last active time OK
@@ -257,6 +283,37 @@ def create_app(test_config=None):
             user.update() 
             returned["success"] = True
             returned["id"] = user.id
+        except Exception as e:
+            return str(e)
+            success = False
+            # Question.rollback()
+        # finally:
+            # Question.close()
+        if success:
+            return jsonify(returned)
+        else:
+            abort(422)
+
+    '''
+     DONE: Ping overloaded return all required information
+    '''
+    @app.route('/users/ping/overloaded/<int:id>')
+    def ping_user_overloaded(id):
+        success = True
+        returned = {}
+        try:
+            user = MyUser.query.filter(MyUser.id == id).one_or_none()
+            if user is None:
+                abort(404)
+                # return jsonify({
+                #     "result" : "not found"
+                # })
+            user.update() 
+            returned["success"] = True
+            returned["id"] = user.id
+            is_jsonified = False
+            returned['users'] = get_users(is_jsonified)
+            returned['messages'] = get_receiver_msgs(id, is_jsonified)
         except Exception as e:
             return str(e)
             success = False
