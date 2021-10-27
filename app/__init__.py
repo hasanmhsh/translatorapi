@@ -159,7 +159,7 @@ def create_app(test_config=None):
     def get_usr_msgs(firstuserid, seconduserid):
         #selection = Message.query.filter(or_(and_(Message.sender_id==firstuserid, Message.receiver_id==seconduserid),and_(Message.receiver_id==firstuserid, Message.sender_id==seconduserid))).order_by(desc(Message.timedt)).all()
         
-        selection = Message.query.filter(and_(Message.receiver_id==firstuserid, Message.sender_id==seconduserid)).order_by(desc(Message.timedt)).all()
+        selection = Message.query.filter(and_(Message.receiver_id==firstuserid, Message.sender_id==seconduserid)).order_by(asc(Message.timedt)).all()
 
         # firstuser id is the id of the one who request this endpoint so i will return the message for sended to only
         # total_size = len(selection)
@@ -187,7 +187,7 @@ def create_app(test_config=None):
     def get_receiver_msgs(receiver_id, is_jsonified=True):
         #selection = Message.query.filter(or_(and_(Message.sender_id==firstuserid, Message.receiver_id==seconduserid),and_(Message.receiver_id==firstuserid, Message.sender_id==seconduserid))).order_by(desc(Message.timedt)).all()
         
-        selection = Message.query.filter(Message.receiver_id==receiver_id).order_by(desc(Message.timedt)).all()
+        selection = Message.query.filter(Message.receiver_id==receiver_id).order_by(asc(Message.timedt)).all()
 
         # firstuser id is the id of the one who request this endpoint so i will return the message for sended to only
 
