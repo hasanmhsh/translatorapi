@@ -234,7 +234,7 @@ def create_app(test_config=None):
                 # })
                 msg.delete() 
             returned["success"] = True
-            returned["deleted"] = msg.id
+            returned["deleted"] = id
         except Exception as e:
             return str(e)
             error = True
