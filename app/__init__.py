@@ -227,12 +227,12 @@ def create_app(test_config=None):
         returned = {}
         try:
             msg = Message.query.filter(Message.id == id).one_or_none()
-            if msg is None:
-                abort(404)
+            if msg is not None:
+                # abort(404)
                 # return jsonify({
                 #     "result" : "not found"
                 # })
-            msg.delete() 
+                msg.delete() 
             returned["success"] = True
             returned["deleted"] = msg.id
         except Exception as e:
