@@ -379,7 +379,7 @@ def create_app(test_config=None):
             if user is None:
                 return jsonify({"success" : False})
             else:
-                return jsonify({"success" : True})
+                return jsonify({"success" : True , "user" : user.format()})
             user.update() 
             returned["success"] = True
         except Exception as e:
