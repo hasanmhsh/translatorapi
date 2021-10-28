@@ -34,7 +34,7 @@ def create_app(test_config=None):
         return response
 
 
-    @app.route('/shakkelha')
+    @app.route('/shakkelha', methods=['POST'])
     def shakkel():
         body = request.get_json()
         text = body.get('text', 'No text')
