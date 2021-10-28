@@ -95,14 +95,18 @@ class MyUser(db.Model):
   email = Column(String)
   language = Column(String)
   country = Column(String)
+  password = Column(String)
+  gender = Column(String)
   lastactivedatetimedt = db.Column(db.TIMESTAMP, nullable=False, server_default=db.func.now(), onupdate=db.func.now())
 
-  def __init__(self, name, phone, email, language, country):
+  def __init__(self, name, phone, email, language, country,password,gender):
     self.name = name
     self.phone = phone
     self.email = email
     self.language = language
     self.country = country
+    self.password = password
+    self.gender = gender
     # self.lastactivedatetimedt = db.func.now()
 
   def insert(self):
@@ -126,6 +130,7 @@ class MyUser(db.Model):
       'email': self.email,
       'language': self.language,
       'country': self.country,
+      'gender': self.gender,
       'lastactivetimedt' : self.lastactivedatetimedt
       }
       
@@ -138,5 +143,6 @@ class MyUser(db.Model):
       'language': self.language,
       'country': self.country,
       'lastactivetimedt' : self.lastactivedatetimedt,
+      'gender': self.gender,
       'isactive' : self.lastactivedatetimedt >= dttime_threshold
     }

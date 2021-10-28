@@ -59,6 +59,8 @@ def create_app(test_config=None):
             'email' : "email",
             'language' : "language",
             'country' : "country"
+            "password": "password",
+            "gender" : "gender"
 
         }
         '''
@@ -69,20 +71,27 @@ def create_app(test_config=None):
         new_email = body.get('email', None)
         new_language = body.get('language', None)
         new_country = body.get('country', None)
+        new_password = body.get('password', None)
+        new_gender = body.get('gender', None)
         returned = {}
 
 
         try:
+            existed_user = MyUser.query.filter(MyUser.email == new_email).one_or_none()
+            if existed_user is not None:
+                return jsonify({"exist":True,"success":False})
             user=MyUser(
                 new_name, 
                 new_phone, 
                 new_email, 
                 new_language, 
-                new_country
+                new_country,
+                new_password,
+                new_gender
                 )
-            print("before insert")
+            # print("before insert")
             user.insert()
-            print("after insert")
+            # print("after insert")
             returned = user.format()
         except Exception as e:
             return str(e)
@@ -342,6 +351,37 @@ def create_app(test_config=None):
             is_jsonified = False
             returned['users'] = get_users(is_jsonified)
             returned['messages'] = get_receiver_msgs(id, is_jsonified)
+        except Exception as e:
+            return str(e)
+            success = False
+            # Question.rollback()
+        # finally:
+            # Question.close()
+        if success:
+            return jsonify(returned)
+        else:
+            abort(422)
+            
+    '''
+    DONE: Login
+    '''
+    @app.route('/users/login',  methods=['POST'])
+    def login_user():
+        success = True
+        body = request.get_json()
+        email = body.get('email', None)
+        password = body.get('password', None)
+        returned = {}
+        if email is None or password is None:
+            return jsonify({"success" : False})
+        try:
+            user = MyUser.query.filter(and_(MyUser.email == email , MyUser.password == password)).one_or_none()
+            if user is None:
+                return jsonify({"success" : False})
+            else:
+                return jsonify({"success" : True})
+            user.update() 
+            returned["success"] = True
         except Exception as e:
             return str(e)
             success = False
