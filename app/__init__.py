@@ -1,11 +1,12 @@
 import os
-from flask import Flask, request, abort, jsonify
+from flask import Flask, request, abort, jsonify, send_file, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func, or_, and_, not_, asc, desc
 from flask_cors import CORS
 import random
 from datetime import datetime, timedelta
 import mishkal.tashkeel
+from werkzeug import secure_filename
 
 from models import setup_db, MyUser, Message,db
 
@@ -270,6 +271,10 @@ def create_app(test_config=None):
                 #     "result" : "not found"
                 # })
             usr.delete() 
+            try:
+                delete_user_photo(id)
+            except Exception as e:
+                photo_error = true
             returned["success"] = True
             returned["deleted"] = usr.id
         except Exception as e:
@@ -393,6 +398,28 @@ def create_app(test_config=None):
         else:
             abort(422)
 
+    @app.route('/users/photo/upload/<int:id>', methods = ['GET', 'POST'])
+    def upload_user_photo(id):
+        print(id)
+        filename = str(id)+".png"
+        f = request.files['file']
+        full_filename =  os.path.join(app.root_path+'/UPLOAD_FOLDER/', filename)
+        f.save(full_filename)
+        return 'file uploaded successfully'
+
+
+    @app.route('/users/photo/download/<int:id>', methods=['GET', 'POST'])
+    def download_user_photo(id):
+        filename = str(id)+".png"
+        uploads = os.path.join(app.root_path+'/UPLOAD_FOLDER')
+        return send_from_directory(directory=uploads, filename=filename)
+
+    
+    @app.route('/users/photo/delete/<int:id>', methods=['DELETE'])
+    def delete_user_photo(id):
+        filename = str(id)+".png"
+        os.remove(os.path.join(app.root_path+'/UPLOAD_FOLDER/' , filename))
+        return "Photo removed successfully"
 
 
 
