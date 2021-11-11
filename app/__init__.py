@@ -417,9 +417,12 @@ def create_app(test_config=None):
     
     @app.route('/users/photo/delete/<int:id>', methods=['DELETE'])
     def delete_user_photo(id):
-        filename = str(id)+".png"
-        os.remove(os.path.join(app.root_path+'/UPLOAD_FOLDER/' , filename))
-        return "Photo removed successfully"
+        try:
+            filename = str(id)+".png"
+            os.remove(os.path.join(app.root_path+'/UPLOAD_FOLDER/' , filename))
+            return "Photo removed successfully"
+        except Exception as e:
+            abort(404)
 
 
 
