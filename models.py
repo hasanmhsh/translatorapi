@@ -161,7 +161,8 @@ class Avatar(db.Model):
   id = Column(Integer, primary_key=True)
   image = Column(postgresql.BYTEA(), autoincrement=False, nullable=True)
 
-  def __init__(self, image):
+  def __init__(self,id, image):
+    self.id = id
     self.image = image
 
   def insert(self):

@@ -437,11 +437,13 @@ def create_app(test_config=None):
         try:
             delete_user_photo(id)
             f = request.files['file']
-            with db.engine.connect() as connection:
-                res = connection.execute(
-                    '''INSERT INTO avatar (id, image) VALUES (%s,%s)''', 
+            avatar = Avatar(id,f.read())
+            avatar.insert()
+            # with db.engine.connect() as connection:
+            #     res = connection.execute(
+            #         '''INSERT INTO avatar (id, image) VALUES (%s,%s)''', 
               
-                    (id, f.read() ))
+            #         (id, f.read() ))
 
             return jsonify({
                 "result" : "successful"
@@ -477,10 +479,13 @@ def create_app(test_config=None):
     @app.route('/users/photo/delete/<int:id>', methods=['DELETE'])
     def delete_user_photo(id):
         try:
-            with db.engine.connect() as connection:
-                res = connection.execute(
-                    '''DELETE FROM avatar WHERE id=%s''', 
-                    (id))
+            avatar = Avatar.query.filter(Avatar.id == id).one_or_none()
+            if avatar is not None:
+                avatar.delete()
+            # with db.engine.connect() as connection:
+            #     res = connection.execute(
+            #         '''DELETE FROM avatar WHERE id=%s''', 
+            #         (id))
             return jsonify({
                 "result" : "successful"
             })
