@@ -274,7 +274,7 @@ def create_app(test_config=None):
             try:
                 delete_user_photo(id)
             except Exception as e:
-                photo_error = true
+                photo_error = True
             returned["success"] = True
             returned["deleted"] = usr.id
         except Exception as e:
