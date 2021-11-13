@@ -405,7 +405,9 @@ def create_app(test_config=None):
         f = request.files['file']
         full_filename =  os.path.join(app.root_path+'/UPLOAD_FOLDER/', filename)
         f.save(full_filename)
-        return 'file uploaded successfully'
+        return jsonify({
+                "result" : "successful"
+        })
 
 
     @app.route('/users/photo/download/<int:id>', methods=['GET', 'POST'])
@@ -420,7 +422,9 @@ def create_app(test_config=None):
         try:
             filename = str(id)+".png"
             os.remove(os.path.join(app.root_path+'/UPLOAD_FOLDER/' , filename))
-            return "Photo removed successfully"
+            return jsonify({
+                "result" : "successful"
+            })
         except Exception as e:
             abort(404)
 
