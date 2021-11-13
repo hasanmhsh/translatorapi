@@ -8,7 +8,9 @@ from datetime import datetime, timedelta
 import mishkal.tashkeel
 from werkzeug import secure_filename
 
-from models import setup_db, MyUser, Message,db
+from models import setup_db, MyUser, Message, Avatar,db
+
+import io
 
 QUESTIONS_PER_PAGE = 10
 
@@ -398,34 +400,94 @@ def create_app(test_config=None):
         else:
             abort(422)
 
+    # @app.route('/users/photo/upload/<int:id>', methods = ['GET', 'POST'])
+    # def upload_user_photo(id):
+    #     print(id)
+    #     filename = str(id)+".png"
+    #     f = request.files['file']
+    #     full_filename =  os.path.join(app.root_path+'/UPLOAD_FOLDER/', filename)
+    #     f.save(full_filename)
+    #     return jsonify({
+    #             "result" : "successful"
+    #     })
+
+
+    # @app.route('/users/photo/download/<int:id>', methods=['GET', 'POST'])
+    # def download_user_photo(id):
+    #     filename = str(id)+".png"
+    #     uploads = os.path.join(app.root_path+'/UPLOAD_FOLDER')
+    #     return send_from_directory(directory=uploads, filename=filename)
+
+    
+    # @app.route('/users/photo/delete/<int:id>', methods=['DELETE'])
+    # def delete_user_photo(id):
+    #     try:
+    #         filename = str(id)+".png"
+    #         os.remove(os.path.join(app.root_path+'/UPLOAD_FOLDER/' , filename))
+    #         return jsonify({
+    #             "result" : "successful"
+    #         })
+    #     except Exception as e:
+    #         abort(404)
+
+
+
     @app.route('/users/photo/upload/<int:id>', methods = ['GET', 'POST'])
     def upload_user_photo(id):
-        print(id)
-        filename = str(id)+".png"
-        f = request.files['file']
-        full_filename =  os.path.join(app.root_path+'/UPLOAD_FOLDER/', filename)
-        f.save(full_filename)
-        return jsonify({
+        try:
+            delete_user_photo(id)
+            f = request.files['file']
+            with db.engine.connect() as connection:
+                res = connection.execute(
+                    '''INSERT INTO avatar (id, image) VALUES (%s,%s)''', 
+              
+                    (id, f.read() ))
+
+            return jsonify({
                 "result" : "successful"
-        })
+            })
+        except Exception as e:
+            # return jsonify({
+            #     "result" : str(e)
+            # })
+            abort(422)
 
 
     @app.route('/users/photo/download/<int:id>', methods=['GET', 'POST'])
     def download_user_photo(id):
-        filename = str(id)+".png"
-        uploads = os.path.join(app.root_path+'/UPLOAD_FOLDER')
-        return send_from_directory(directory=uploads, filename=filename)
+        try:
+            avatar = Avatar.query.filter(Avatar.id == id).one_or_none()
+            if avatar is None:
+                abort(404)
+            filename = "temporaryavatar.png"
+            full_filename =  os.path.join(app.root_path+'/UPLOAD_FOLDER/', filename)
+            f = open(full_filename, "wb")
+            f.write(avatar.image)
+            f.close()
+            uploads = os.path.join(app.root_path+'/UPLOAD_FOLDER')
+            return send_from_directory(directory=uploads, filename=filename)
+            # return avatar.image
+        except Exception as e:
+            # return jsonify({
+            #     "result" : str(e)
+            # })
+            abort(404)
 
     
     @app.route('/users/photo/delete/<int:id>', methods=['DELETE'])
     def delete_user_photo(id):
         try:
-            filename = str(id)+".png"
-            os.remove(os.path.join(app.root_path+'/UPLOAD_FOLDER/' , filename))
+            with db.engine.connect() as connection:
+                res = connection.execute(
+                    '''DELETE FROM avatar WHERE id=%s''', 
+                    (id))
             return jsonify({
                 "result" : "successful"
             })
         except Exception as e:
+            # return jsonify({
+            #     "result" : str(e)
+            # })
             abort(404)
 
 

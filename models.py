@@ -1,5 +1,6 @@
 import os
 from sqlalchemy import Column, String, Integer, create_engine, TIMESTAMP
+from sqlalchemy.dialects import mysql, postgresql, sqlite
 from sqlalchemy_utils import database_exists, create_database
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
@@ -147,3 +148,29 @@ class MyUser(db.Model):
       'gender': self.gender,
       'isactive' : self.lastactivedatetimedt >= dttime_threshold
     }
+
+
+
+'''
+Avatar
+
+'''
+class Avatar(db.Model):  
+  __tablename__ = 'avatar'
+
+  id = Column(Integer, primary_key=True)
+  image = Column(postgresql.BYTEA(), autoincrement=False, nullable=True)
+
+  def __init__(self, image):
+    self.image = image
+
+  def insert(self):
+    db.session.add(self)
+    db.session.commit()
+  
+  def update(self):
+    db.session.commit()
+
+  def delete(self):
+    db.session.delete(self)
+    db.session.commit()
