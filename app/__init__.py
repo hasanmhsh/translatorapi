@@ -475,6 +475,36 @@ def create_app(test_config=None):
             # })
             abort(404)
 
+
+    
+    @app.route('/users/photo/download/withid/<int:id>', methods=['GET', 'POST'])
+    def download_user_photo_json(id):
+        try:
+            avatar = Avatar.query.filter(Avatar.id == id).one_or_none()
+            if avatar is None:
+                abort(404)
+            filename = "temporaryavatar.png"
+            full_filename =  os.path.join(app.root_path+'/UPLOAD_FOLDER/', filename)
+            f = open(full_filename, "wb")
+            f.write(avatar.image)
+            f.close()
+            uploads = os.path.join(app.root_path+'/UPLOAD_FOLDER')
+            image = send_from_directory(directory=uploads, filename=filename)
+            image.headers['id'] = id
+            return image
+            # return jsonify(
+            #     {
+            #         "id" : id,
+            #         "image" : image
+            #     }
+            # )
+            # return avatar.image
+        except Exception as e:
+            # return jsonify({
+            #     "result" : str(e)
+            # })
+            abort(404)
+
     
     @app.route('/users/photo/delete/<int:id>', methods=['DELETE'])
     def delete_user_photo(id):
