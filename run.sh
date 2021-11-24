@@ -14,9 +14,12 @@ export FLASK_APP=app
 
 #    testing: for test environments, general for various test uses
 
-export FLASK_ENV=development
+# export FLASK_ENV=development
+
+export FLASK_ENV=product
 
 #run app directly but you must cd to parent of 'flaskr' folder which is 'part2' folder
-flask run
+python3 -m flask run --host=172.31.16.43
+#python3 -m flask run
 
 #curl http://127.0.0.1:5000/plants
