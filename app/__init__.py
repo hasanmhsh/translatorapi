@@ -528,6 +528,35 @@ def create_app(test_config=None):
 
 
 
+    @app.route('/download/tts/key', methods=['GET'])  #Get key
+    def download_key():
+        try:
+            filename = 'key.google'
+            full_filename =  os.path.join(app.root_path+'/auth', filename)
+            f = open(full_filename, "r")
+            key = f.readline()
+            f.close()
+            return jsonify({'key':key[0:len(key)-1]})
+        except Exception as e:
+            # return jsonify({
+            #     "key" : key
+            # })
+            abort(404)
+
+
+    @app.route('/download/asr/clientkey', methods=['GET'])  #Get key
+    def download_clientkey():
+        try:
+            filename = 'clientkey.google'
+            dir = os.path.join(app.root_path+'/auth')
+            parcel = send_from_directory(directory=dir, filename=filename)
+            return parcel
+        except Exception as e:
+            # return jsonify({
+            #     "key" : key
+            # })
+            abort(404)
+
 
 
 

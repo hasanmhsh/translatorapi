@@ -19,7 +19,7 @@ export FLASK_APP=app
 export FLASK_ENV=product
 
 #run app directly but you must cd to parent of 'flaskr' folder which is 'part2' folder
-python3 -m flask run --host=172.31.16.43
+python3 -m flask run --cert=adhoc --host=172.31.16.43
 #python3 -m flask run
 
 #curl http://127.0.0.1:5000/plants
