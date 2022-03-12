@@ -603,7 +603,7 @@ def create_app(test_config=None):
 
         
      
-    @app.route('/smshjsfhsd78d7sy4hhjbhnbmnbndhfjghui78/<str:origination_number>/<str:app_id>/<str:message>/<str:destination_number>', methods=['POST'])
+    @app.route('/smshjsfhsd78d7sy4hhjbhnbmnbndhfjghui78/<origination_number>/<app_id>/<message>/<destination_number>', methods=['POST'])
     def send_sms():
 #         message = (
 #             "This is a sample message sent from Amazon Pinpoint by using the AWS SDK for "
