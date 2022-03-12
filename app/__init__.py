@@ -615,6 +615,7 @@ def create_app(test_config=None):
             boto3.client('pinpoint'), app_id, origination_number, destination_number,
             message, message_type)
         print(f"Message sent! Message ID: {message_id}.")
+        return 'sms sent successfully!'
 
 
 
