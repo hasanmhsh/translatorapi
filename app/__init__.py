@@ -608,12 +608,12 @@ def create_app(test_config=None):
 #         message = (
 #             "This is a sample message sent from Amazon Pinpoint by using the AWS SDK for "
 #             "Python (Boto 3).")
-#         message_type = "TRANSACTIONAL"
+        message_type = "TRANSACTIONAL"
 
         print("Sending SMS message.")
         message_id = send_sms_message(
             boto3.client('pinpoint'), app_id, origination_number, destination_number,
-            message, message_type)
+            "Verification code \n "+message, message_type)
         print(f"Message sent! Message ID: {message_id}.")
         return 'sms sent successfully!'
 
